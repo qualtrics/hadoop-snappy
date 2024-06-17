@@ -76,8 +76,10 @@ type Reader struct {
 }
 
 // NewReader returns a Reader that can read the hadoop-snappy compressed format
-// that will be read from the io.Reader in. Reading from an input stream that is
-// not hadoop-snappy compressed will result in undefined behavior.
+// that will be read from the io.Reader in.
+//
+// Reading from an input stream that is not hadoop-snappy compressed will result
+// in undefined behavior.
 func NewReader(in io.Reader) *Reader {
 	return &Reader{
 		in:           in,
@@ -86,10 +88,8 @@ func NewReader(in io.Reader) *Reader {
 }
 
 // Read implements the io.Reader interface. Read will return the
-// decompressed data from the compressed input data stream. When
-// the input data stream returns io.EOF, indicating there is no
-// more data to read, Read will also return io.EOF indicating
-// that the stream has been fully read and decompressed.
+// decompressed data from the compressed input data stream. Read
+// returns io.EOF when all data has been decompressed and read.
 func (r *Reader) Read(out []byte) (int, error) {
 	if r.currentBlock.Len() > 0 {
 		return r.currentBlock.Read(out)
