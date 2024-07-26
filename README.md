@@ -1,6 +1,8 @@
 # Hadoop Snappy Reader
 Small library that provides a reader for reading Hadoop Snappy encoded data. See the Go Package documentation for more information on the format and how to use the reader.
 
+There are not currently plans to implement a writer, as the main utility of this library is to read and use data already produced by the Hadoop ecosystem. However, we are open to extending this library to support a writer or other use cases if there is interest.
+
 ## Developing
 
 ### Prerequisites
