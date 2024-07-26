@@ -79,7 +79,9 @@ type Reader struct {
 // that will be read from the io.Reader in.
 //
 // Reading from an input stream that is not hadoop-snappy compressed will result
-// in undefined behavior.
+// in undefined behavior. Because there is no data signature to detect the
+// compression format, the reader can only try to read the stream and will likely
+// return an error, but it may return garbage data instead.
 func NewReader(in io.Reader) *Reader {
 	return &Reader{
 		in:           in,
