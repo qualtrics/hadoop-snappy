@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	gsnappy "github.com/golang/snappy"
-	"github.com/stretchr/testify/assert"
 )
 
 var errTestingError = errors.New("testing error")
@@ -126,10 +125,19 @@ func TestSnappyReader(t *testing.T) {
 			r := NewReader(test.input)
 			output, err := io.ReadAll(r)
 			if test.expectedErr == nil {
-				assert.Equal(t, test.expectedOutput, output, "output from snappy reader does not match expected")
-				assert.NoError(t, err, "unexpected error from snappy reader")
+				if err != nil {
+					t.Fatalf("unexpected error from snappy reader: %v", err)
+				}
+
+				if !bytes.Equal(test.expectedOutput, output) {
+					// we don't try to print the difference because it is likely our output was garbage
+					// and instead will let the developer debug it if encountered
+					t.Errorf("output from snappy reader does not match expected")
+				}
 			} else {
-				assert.ErrorIs(t, err, test.expectedErr, "error from snappy reader does not match expected")
+				if !errors.Is(err, test.expectedErr) {
+					t.Errorf("error from snappy reader does not match expected: got = (%v), want = (%v)", err, test.expectedErr)
+				}
 			}
 		})
 	}
