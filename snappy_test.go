@@ -48,8 +48,8 @@ func TestSnappyReader(t *testing.T) {
 		"returns an error when the frame size header is smaller than the actual frame size": {
 			input: func() io.Reader {
 				data := mustReadFile("testdata/test.jsonl.snappy")
-				// data[3] is least significant byte in the frame header, which is 0x0B (27) in the unaltered file
-				// we should now be setting it to 0x0A (26)
+				// data[3] is least significant byte in the frame header, which is 0x40 (64) in the unaltered file
+				// we should now be setting it to 0x3F (63)
 				data[3] -= 1
 				return bytes.NewReader(data)
 			}(),
@@ -68,8 +68,8 @@ func TestSnappyReader(t *testing.T) {
 		"returns an error when the block size header is smaller than the actual block size": {
 			input: func() io.Reader {
 				data := mustReadFile("testdata/test.jsonl.snappy")
-				// data[7] is most significant byte in the block header, which is 0xE3 (227) in the unaltered file
-				// we should now be setting it to 0xE2 (226)
+				// data[7] is least significant byte in the block header, which is 0x76 (118) in the unaltered file
+				// we should now be setting it to 0x75 (117)
 				data[7] += 1
 				return bytes.NewReader(data)
 			}(),
