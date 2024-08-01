@@ -1,7 +1,7 @@
 # Hadoop Snappy Reader
 [![Go Reference](https://pkg.go.dev/badge/github.com/qualtrics/hadoop-snappy.svg)](https://pkg.go.dev/github.com/qualtrics/hadoop-snappy)
 
-Small library that provides a reader for reading Hadoop Snappy encoded data. See the Go Package documentation for more information on the format and how to use the reader.
+Small library that provides a reader for reading Hadoop Snappy encoded data. See the (Go Package documentation)[https://pkg.go.dev/github.com/qualtrics/hadoop-snappy] for more information and examples of how to use the reader.
 
 There are not currently plans to implement a writer, as the main utility of this library is to read and use data already produced by the Hadoop ecosystem. However, we are open to extending this library to support a writer or other use cases if there is interest.
 
@@ -23,7 +23,9 @@ go test ./...
 1. Create the compressed file with `snzip -t hadoop-snappy -k testfile/{uncompressed file}`
 
 ## Release
-Be sure to understand how [Go Module publishing](https://go.dev/blog/publishing-go-modules) works, especially semantic versioning. To release simply create a new semantically versioned tag and push it.
+Be sure to understand how [Go Module publishing](https://go.dev/blog/publishing-go-modules) works, especially semantic versioning.
+
+To release simply create a new semantically versioned tag and push it.
 ```bash
 # Create a new semantic versioned tag with release notes
 git tag -a v1.0.0 -m "release notes"
