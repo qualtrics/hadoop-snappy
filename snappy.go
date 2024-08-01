@@ -1,37 +1,6 @@
 /*
 Package snappy implements decompression for the Hadoop format of snappy; a
-poorly documented compression scheme internal to the Hadoop ecosystem.
-
-The Hadoop format of snappy is similar to regular snappy block encoding,
-except that instead of compressing into one big block, Hadoop will create
-a stream of frames where each frame contains blocks that can each be
-independently decoded. A frame can contain 1 or more blocks and a stream
-can contain 1 or more frames.
-
-Each FRAME begins with a 4 byte header, which represents the total length
-of the frame after being DECOMPRESSED (i.e. once we're done decompressing
-the frame, this is how long the decompressed frame will be). This 4 byte
-header is a big endian encoded uint32. The header is not included in the
-total length of the frame.
-
-Each BLOCK in the frame also begins with a 4 byte header that is the
-COMPRESSED length of the block (i.e. how many bytes we need to read from
-the stream to get the entire block before we can decompress it). This
-header is also a big endian encoded uint32. The header is not included in
-the total length of the block.
-
-The stream structure is as follows
-
-	'['   == start of stream
-	']'   == end of stream
-	'|'   == component separator (symbolic only as the actual data has no padding or separators)
-	'...' == abbreviated
-
-	[ frame 1 header | block 1 header | block 1 | block 2 header | block 2 | ... | frame 2 header | block 1 header | block 1 | ... ]
-
-The format of each individual snappy block can be found here:
-
-	https://github.com/google/snappy/blob/main/format_description.txt
+compression scheme internal to the Hadoop ecosystem and HDFS.
 */
 package snappy
 
