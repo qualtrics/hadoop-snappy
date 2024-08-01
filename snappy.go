@@ -20,7 +20,7 @@ const (
 )
 
 var (
-	errEmptyBlock           = errors.New("hadoop-snappy: zero length block in input stream")
+	errEmptyBlock           = errors.New("zero length block in input stream")
 	errDecompressedTooLarge = errors.New("decompressed frame larger than expected")
 )
 
@@ -69,13 +69,13 @@ func (r *Reader) Read(out []byte) (int, error) {
 	if r.frameRemaining == 0 {
 		err := r.nextFrame()
 		if err != nil {
-			return 0, err
+			return 0, wrapPackageName(err)
 		}
 	}
 
 	err := r.nextBlock()
 	if err != nil {
-		return 0, err
+		return 0, wrapPackageName(err)
 	}
 
 	return r.currentBlock.Read(out)
@@ -91,7 +91,7 @@ func (r *Reader) nextFrame() error {
 			return io.EOF
 		}
 
-		return fmt.Errorf("hadoop-snappy: read frame header: %w", err)
+		return fmt.Errorf("read frame header: %w", err)
 	}
 
 	r.frameRemaining = uncompressedSize
@@ -115,7 +115,7 @@ func (r *Reader) readNextBlock() error {
 			err = io.ErrUnexpectedEOF
 		}
 
-		return fmt.Errorf("hadoop-snappy: read block header: %w", err)
+		return fmt.Errorf("read block header: %w", err)
 	}
 
 	if nextBlockLength == 0 && r.frameRemaining != 0 {
@@ -132,7 +132,7 @@ func (r *Reader) readNextBlock() error {
 			err = io.ErrUnexpectedEOF
 		}
 
-		return fmt.Errorf("hadoop-snappy: read block: %w", err)
+		return fmt.Errorf("read block: %w", err)
 	}
 
 	return nil
@@ -141,11 +141,11 @@ func (r *Reader) readNextBlock() error {
 func (r *Reader) decompress() error {
 	decompressedLength, err := snappy.DecodedLen(r.compressedBuf.Bytes())
 	if err != nil {
-		return fmt.Errorf("hadoop-snappy: determine block decoded length: %w", err)
+		return fmt.Errorf("determine block decoded length: %w", err)
 	}
 
 	if decompressedLength > r.frameRemaining {
-		return fmt.Errorf("hadoop-snappy: decompress block: %w", errDecompressedTooLarge)
+		return fmt.Errorf("decompress block: %w", errDecompressedTooLarge)
 	}
 
 	r.frameRemaining -= decompressedLength
@@ -155,7 +155,7 @@ func (r *Reader) decompress() error {
 
 	decompressed, err := snappy.Decode(r.decompressedBuf.Bytes(), r.compressedBuf.Bytes())
 	if err != nil {
-		return fmt.Errorf("hadoop-snappy: decompress block: %w", err)
+		return fmt.Errorf("decompress block: %w", err)
 	}
 
 	r.currentBlock = bytes.NewReader(decompressed)
@@ -171,4 +171,16 @@ func readHeader(r io.Reader) (int, error) {
 	}
 
 	return int(binary.BigEndian.Uint32(headerBuf)), nil
+}
+
+// wrapPackageName wraps an error with the package name to make
+// it easier for consumers to identify the error source.
+func wrapPackageName(err error) error {
+	if errors.Is(err, io.EOF) {
+		// we don't want to wrap io.EOF if it is not already wrapped
+		// because we are intentionally returning it unwrapped.
+		return err
+	}
+
+	return fmt.Errorf("hadoop-snappy: %w", err)
 }
