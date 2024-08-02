@@ -7,16 +7,32 @@ on:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
+    
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
+
     - name: Set up Go
       uses: actions/setup-go@v5
       with:
         go-version: '1.22'
+
     - name: Install dependencies
       run:  go get .
-    - name: Test
-      run: go test -v ./...
+
+    - name: Unit Test Coverage
+      run: go test ./... -coverprofile=./cover.out -covermode=atomic -coverpkg=./...
+
+    - name: check test coverage
+      uses: vladopajic/go-test-coverage@v2
+      with:
+        profile: cover.out
+        local-prefix: github.com/qualtrics/hadoop-snappy
+        threshold-total: 95
+        # Generate test coverage badge
+        ## Only generate if we are on the main branch
+        git-token: ${{ github.ref_name == 'main' && secrets.GITHUB_TOKEN || '' }}
+        ## Name of branch where badges are stored
+        git-branch: badges 
