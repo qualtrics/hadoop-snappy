@@ -1,7 +1,8 @@
 # Hadoop Snappy Reader
 [![Go Reference](https://pkg.go.dev/badge/github.com/qualtrics/hadoop-snappy.svg)](https://pkg.go.dev/github.com/qualtrics/hadoop-snappy)
+![Build Status](https://github.com/qualtrics/hadoop-snappy/actions/workflows/ci.yml/badge.svg)
 
-Small library that provides a reader for reading Hadoop Snappy encoded data. See the (Go Package documentation)[https://pkg.go.dev/github.com/qualtrics/hadoop-snappy] for more information and examples of how to use the reader.
+Small library that provides a reader for reading Hadoop Snappy encoded data. See the [Go Package documentation](https://pkg.go.dev/github.com/qualtrics/hadoop-snappy) for more information and examples of how to use the reader.
 
 There are not currently plans to implement a writer, as the main utility of this library is to read and use data already produced by the Hadoop ecosystem. However, we are open to extending this library to support a writer or other use cases if there is interest.
 
